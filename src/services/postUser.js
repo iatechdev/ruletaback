@@ -4,9 +4,9 @@ let base64 = require('base-64');
 const fetch = require('node-fetch');
 global.fetch = fetch
 global.Headers = fetch.Headers;
-const url =  'http://test.multistrategy.co/Viva/Api/api/Customer/GetMasterTableByName?masterTableName=MALLS&id=1%27';
-const url2 = 'http://test.multistrategy.co/Viva/Api/api/Customer/GetCustomerByIdentification';
-const url3 = 'http://test.multistrategy.co/Viva/Api/api/Customer/SaveGameParticipation';
+const url =  'http://api.crmviva.com/api/Customer/GetMasterTableByName?masterTableName=MALLS&id=1%27';
+const url2 = 'http://api.crmviva.com/api/Customer/GetCustomerByIdentification';
+const url3 = 'http://api.crmviva.com/api/Customer/SaveGameParticipation';
 const username = 'USER_RULETA';
 const password = 'VivaRuleta2020';
 const headers = new Headers({
@@ -18,6 +18,7 @@ const postUser = async (body) => {
           let IdentificationNumber = body.IdentificationNumber
           let CodeIdentificationType = body.CodeIdentificationType
           let win = 0;
+          let msg = "Gracias por actualizar tus datos";
           var n100 = Math.floor(Math.random() * 100 + 1);
           //traigo la informacion del usuario desde viva
           let userData = await fetch(url2, {
@@ -34,7 +35,7 @@ const postUser = async (body) => {
             });
             //console.log(userData)
             if (userData){
-                      let cc = userData[0].CENTRO_COMERCIAL_REGISTRO;
+                      let cc = userData[0].CENTRO_COMERCIAL_REGISTRO_ID;
                       let GUID = userData[0].GUID
                       let nombres = userData[0].PRIMER_NOMBRE + " " + userData[0].SEGUNDO_NOMBRE;
                       
@@ -43,7 +44,7 @@ const postUser = async (body) => {
 
                       let ccData = await db.ruletaCC.findOne({
                         where: {
-                          description: cc
+                          idcc: cc
                         }
                       }).then(data => {
                           return data;
@@ -63,7 +64,7 @@ const postUser = async (body) => {
                       });
 
                 
-                      if (ccData.quantity > ccData.winners && ccData.available >= 1 && userDataruleta.data === null && n100 >= 15) {
+                      if (ccData.quantity > ccData.winners && ccData.available >= 1 && userDataruleta.data === null && n100 >= 75) {
                                 let iswin = false
                                 let updPremios = await db.sequelize.query('UPDATE ruleta_cc SET winners= winners + 1, available = available - 1 WHERE id = ' + ccData.id + ' AND winners < ' + ccData.quantity)
                                   .then(function (data) {
@@ -98,13 +99,14 @@ const postUser = async (body) => {
                                   })
                                   .then(response => response.json())
                                   .then(function (json) {
-                                    //console.log(json)
+                                    console.log(json)
                                   });
 
 
                                   return {
                                     st: win,
-                                    name: nombres
+                                    name: nombres,
+                                    msg: msg
                                   }
 
                     } else {
@@ -123,7 +125,8 @@ const postUser = async (body) => {
 
                                   return {
                                     st: win,
-                                    name: nombres
+                                    name: nombres,
+                                    msg: msg
                                   }
                     }
 
@@ -131,7 +134,8 @@ const postUser = async (body) => {
             } else {
               return {
                 st: 3,
-                name: "Usuario no registrado"
+                name: "Usuario no registrado",
+                msg: msg
               }
             }
 

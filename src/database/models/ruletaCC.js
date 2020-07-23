@@ -34,6 +34,11 @@ export default function(sequelize, DataTypes) {
 			allowNull: false,
 			field: 'available'
 		},
+		msg: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+			field: 'msg'
+		},
 		updatedAt: {
 			type: DataTypes.DATE,
 			allowNull: true,
