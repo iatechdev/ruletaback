@@ -37,7 +37,8 @@ const postUser = async (body) => {
             if (userData){
                       let cc = userData[0].CENTRO_COMERCIAL_REGISTRO_ID;
                       let GUID = userData[0].GUID
-                      let nombres = userData[0].PRIMER_NOMBRE + " " + userData[0].SEGUNDO_NOMBRE;
+                      let nombres = userData[0].PRIMER_NOMBRE + " " + userData[0].PRIMER_APELLIDO;
+                      
                       
                       
                       //traigo la informacion del usuario desde viva
